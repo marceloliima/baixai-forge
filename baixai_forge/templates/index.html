@@ -1,0 +1,97 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="color-scheme" content="dark">
+  <title>{{ app_name }} — downloader local</title>
+  <link rel="stylesheet" href="/static/styles.css">
+</head>
+<body>
+  <div class="shell">
+    <header class="topbar">
+      <div>
+        <div class="brand-row">
+          <span class="brand-mark" aria-hidden="true">B</span>
+          <h1>{{ app_name }}</h1>
+          <span class="version">v{{ version }}</span>
+        </div>
+        <p>Downloads locais com fila, progresso, histórico e recuperação de erros.</p>
+      </div>
+      <div id="health-pill" class="health-pill neutral">Verificando sistema…</div>
+    </header>
+
+    <main>
+      <section class="panel hero-panel">
+        <div class="section-title">
+          <div>
+            <span class="eyebrow">NOVO DOWNLOAD</span>
+            <h2>Cole o link e escolha o formato</h2>
+          </div>
+          <span id="platform-hint" class="platform-chip">Plataforma automática</span>
+        </div>
+
+        <form id="download-form" autocomplete="off">
+          <label class="field full">
+            <span>Link</span>
+            <input id="url" name="url" type="text" inputmode="url" maxlength="8192"
+                   placeholder="https://youtube.com/watch?v=..." required>
+          </label>
+
+          <div class="form-grid">
+            <label class="field">
+              <span>Formato</span>
+              <select id="media-type" name="media_type">
+                <option value="video">Vídeo</option>
+                <option value="mp3">MP3</option>
+              </select>
+            </label>
+
+            <label class="field">
+              <span>Qualidade</span>
+              <select id="quality" name="quality"></select>
+            </label>
+          </div>
+
+          <div class="actions-row">
+            <button id="submit-button" class="primary" type="submit">Adicionar à fila</button>
+            <span class="legal-note">Baixe somente conteúdos públicos ou que você tenha autorização para usar.</span>
+          </div>
+        </form>
+      </section>
+
+      <section class="panel status-panel">
+        <div class="section-title">
+          <div>
+            <span class="eyebrow">DIAGNÓSTICO</span>
+            <h2>Ambiente local</h2>
+          </div>
+          <button id="refresh-health" class="ghost small" type="button">Atualizar</button>
+        </div>
+        <div id="health-grid" class="health-grid"></div>
+        <div id="health-warnings" class="warnings hidden"></div>
+      </section>
+
+      <section class="panel jobs-panel">
+        <div class="section-title">
+          <div>
+            <span class="eyebrow">HISTÓRICO</span>
+            <h2>Downloads</h2>
+          </div>
+          <button id="refresh-jobs" class="ghost small" type="button">Recarregar</button>
+        </div>
+        <div id="empty-state" class="empty-state">Nenhum download ainda.</div>
+        <div id="jobs" class="jobs-list"></div>
+      </section>
+    </main>
+
+    <footer>
+      <span>{{ app_name }} v{{ version }}</span>
+      <span>Processamento local em localhost.</span>
+    </footer>
+  </div>
+
+  <div id="toast" class="toast" role="status" aria-live="polite"></div>
+  <script src="/static/app.js" defer></script>
+</body>
+</html>
