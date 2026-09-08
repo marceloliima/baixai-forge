@@ -61,7 +61,7 @@ function platformFromUrl(value) {
     if (host === "instagram.com" || host.endsWith(".instagram.com")) return "Instagram";
     if (host === "tiktok.com" || host.endsWith(".tiktok.com")) return "TikTok";
     if (["facebook.com","fb.watch"].some(d => host === d || host.endsWith(`.${d}`))) return "Facebook";
-    if (host.includes("shopee") || host === "shp.ee") return "Shopee";
+    if (host.includes("shopee") || host === "shp.ee" || host.endsWith(".shp.ee") || host === "vod.susercontent.com" || host.endsWith(".vod.susercontent.com")) return "Shopee";
   } catch (_) {}
   return "Plataforma automática";
 }
@@ -160,7 +160,7 @@ async function loadJobs() {
       if (ACTIVE.has(job.status)) hasActive = true;
     }
     clearTimeout(pollTimer);
-    pollTimer = setTimeout(loadJobs, hasActive ? 900 : 3500);
+    pollTimer = setTimeout(loadJobs, hasActive ? 900 : 12000);
   } catch (err) {
     toast(err.message);
     clearTimeout(pollTimer);

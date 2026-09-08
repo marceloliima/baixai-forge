@@ -12,6 +12,7 @@ from pathlib import Path
 from typing import Callable
 
 from .config import Settings
+from .shopee import ShopeeResolutionError, ShopeeResolver
 
 logger = logging.getLogger("baixai_forge.downloader")
 
@@ -67,6 +68,7 @@ class DownloadService:
         *,
         job_id: str,
         url: str,
+        platform: str,
         media_type: str,
         quality: str,
         progress_callback: ProgressCallback,
@@ -78,6 +80,7 @@ class DownloadService:
             self._download_sync,
             job_id,
             url,
+            platform,
             media_type,
             quality,
             progress_callback,
@@ -88,6 +91,7 @@ class DownloadService:
         self,
         job_id: str,
         url: str,
+        platform: str,
         media_type: str,
         quality: str,
         progress_callback: ProgressCallback,
@@ -103,6 +107,54 @@ class DownloadService:
             ) from exc
 
         self._assert_disk_space()
+
+        resolved_title: str | None = None
+        resolved_uploader: str | None = None
+        resolved_duration: float | None = None
+        source_headers: dict[str, str] = {}
+        source_url = url
+        fallback_source_url: str | None = None
+
+        if platform == "shopee":
+            progress_callback(
+                {
+                    "status": "processing",
+                    "message": "Resolvendo link da Shopee...",
+                    "progress": 0.0,
+                }
+            )
+            try:
+                resolved = ShopeeResolver(self.settings).resolve(url, cancel_event)
+            except ShopeeResolutionError as exc:
+                if cancel_event.is_set():
+                    raise DownloadCancelled() from exc
+                raise DownloadExecutionError(
+                    exc.public_message,
+                    code=exc.code,
+                    retryable=exc.retryable,
+                ) from exc
+            source_url = resolved.media_url
+            fallback_source_url = (
+                resolved.original_media_url
+                if resolved.clean_variant and resolved.original_media_url != resolved.media_url
+                else None
+            )
+            source_headers = resolved.headers
+            resolved_title = resolved.title
+            resolved_uploader = resolved.uploader
+            resolved_duration = resolved.duration
+            progress_callback(
+                {
+                    "status": "downloading",
+                    "message": "Vídeo da Shopee localizado. Iniciando download...",
+                    "progress": 0.0,
+                }
+            )
+            logger.info(
+                "Shopee resolvida para mídia direta (%s)",
+                "variante limpa" if resolved.clean_variant else "URL do payload",
+            )
+
         job_dir = (self.settings.download_dir / job_id).resolve()
         temp_dir = job_dir / ".tmp"
         job_dir.mkdir(parents=True, exist_ok=True)
@@ -172,10 +224,29 @@ class DownloadService:
         }
         opts.update(self._format_options(media_type, quality))
         opts.update(self._cookie_options())
+        if source_headers:
+            opts["http_headers"] = source_headers
 
         try:
             with yt_dlp.YoutubeDL(opts) as ydl:
-                info = ydl.extract_info(url, download=True)
+                try:
+                    info = ydl.extract_info(source_url, download=True)
+                except YTDLPDownloadError:
+                    if not fallback_source_url or cancel_event.is_set():
+                        raise
+                    logger.warning(
+                        "Variante limpa da Shopee falhou no download; tentando URL original do payload."
+                    )
+                    self._remove_partial_files(job_dir)
+                    progress_callback(
+                        {
+                            "status": "downloading",
+                            "message": "Tentando a URL alternativa da Shopee...",
+                            "progress": 0.0,
+                        }
+                    )
+                    with yt_dlp.YoutubeDL(opts) as fallback_ydl:
+                        info = fallback_ydl.extract_info(fallback_source_url, download=True)
         except DownloadCancelled:
             self._remove_partial_files(job_dir)
             raise
@@ -230,9 +301,9 @@ class DownloadService:
         )
         return DownloadOutcome(
             path=path,
-            title=_text(info.get("title")) if isinstance(info, dict) else None,
-            uploader=_text(info.get("uploader")) if isinstance(info, dict) else None,
-            duration=_as_float(info.get("duration")) if isinstance(info, dict) else None,
+            title=resolved_title or (_text(info.get("title")) if isinstance(info, dict) else None),
+            uploader=resolved_uploader or (_text(info.get("uploader")) if isinstance(info, dict) else None),
+            duration=resolved_duration or (_as_float(info.get("duration")) if isinstance(info, dict) else None),
         )
 
     def _format_options(self, media_type: str, quality: str) -> dict[str, object]:

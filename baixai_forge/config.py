@@ -64,6 +64,7 @@ class Settings:
     log_level: str
     open_browser: bool
     allow_remote: bool
+    access_log: bool
     cookies_file: Path | None
     cookies_browser: str | None
 
@@ -77,7 +78,7 @@ class Settings:
 
         settings = cls(
             app_name="Baixaí Forge",
-            app_version="1.0.0",
+            app_version="1.1.0",
             host=os.getenv("BAIXAI_HOST", "127.0.0.1").strip() or "127.0.0.1",
             port=_env_int("BAIXAI_PORT", 8765, 1, 65535),
             base_dir=PROJECT_ROOT,
@@ -93,6 +94,7 @@ class Settings:
             log_level=os.getenv("BAIXAI_LOG_LEVEL", "INFO").strip().upper() or "INFO",
             open_browser=not _env_bool("BAIXAI_NO_BROWSER", False),
             allow_remote=_env_bool("BAIXAI_ALLOW_REMOTE", False),
+            access_log=_env_bool("BAIXAI_ACCESS_LOG", False),
             cookies_file=cookies_file,
             cookies_browser=os.getenv("BAIXAI_COOKIES_BROWSER", "").strip() or None,
         )

@@ -4,7 +4,7 @@ build-backend = "setuptools.build_meta"
 
 [project]
 name = "baixai-forge"
-version = "1.0.0"
+version = "1.1.0"
 description = "Downloader local robusto com FastAPI, yt-dlp, fila persistente e interface web."
 readme = "README.md"
 requires-python = ">=3.11"
@@ -27,6 +27,7 @@ dependencies = [
   "Jinja2>=3.1,<4",
   "python-dotenv>=1.2.3,<2",
   "yt-dlp[default]>=2026.8.19",
+  "httpx>=0.27,<1",
 ]
 
 [project.optional-dependencies]

@@ -152,6 +152,7 @@ class JobManager:
                     outcome = await self.downloader.download(
                         job_id=job_id,
                         url=job.url,
+                        platform=job.platform,
                         media_type=job.media_type,
                         quality=job.quality,
                         progress_callback=progress,

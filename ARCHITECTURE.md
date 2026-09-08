@@ -1,4 +1,4 @@
-# Arquitetura — Baixaí Forge v1.0.0
+# Arquitetura — Baixaí Forge v1.1.0
 
 ## Objetivos
 
@@ -66,4 +66,9 @@ Fluxos alternativos:
 
 - O suporte real de cada site depende dos extractors e das mudanças da plataforma.
 - Cancelamento durante a fase inicial de extração pode só ocorrer quando o próximo hook do yt-dlp for executado.
-- A versão 1.0.0 não possui autenticação multiusuário; por isso o modo padrão é localhost.
+- A versão 1.1.0 não possui autenticação multiusuário; por isso o modo padrão é localhost.
+
+
+## Resolvedor Shopee Video (v1.1.0)
+
+Links Shopee passam por `baixai_forge/shopee.py` antes do yt-dlp. O fluxo segue redirecionamentos apenas dentro da allow-list Shopee, lê o payload Next.js `__NEXT_DATA__`, localiza `mediaInfo.video.watermarkVideoUrl`, deriva a variante limpa do CDN quando o nome termina em `.TOKEN1.TOKEN2.mp4`, valida essa candidata com uma requisição de faixa e só então entrega a URL direta ao yt-dlp. Se a candidata não responder, o sistema usa a URL original do payload.

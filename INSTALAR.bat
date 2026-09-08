@@ -2,10 +2,10 @@
 setlocal EnableExtensions EnableDelayedExpansion
 chcp 65001 >nul
 cd /d "%~dp0"
-title Baixai Forge v1.0.0 - Instalacao
+title Baixai Forge v1.1.0 - Instalacao
 
 echo ========================================================================
-echo                    BAIXAI FORGE v1.0.0 - INSTALADOR
+echo                    BAIXAI FORGE v1.1.0 - INSTALADOR
 echo ========================================================================
 echo.
 
@@ -45,8 +45,13 @@ echo [3/5] Instalando dependencias...
 ".venv\Scripts\python.exe" -m pip install -r requirements.txt
 if errorlevel 1 goto :erro
 
+if not exist ".env" (
+  echo Criando .env a partir de .env.example...
+  copy /Y ".env.example" ".env" >nul
+)
+
 echo [4/5] Validando importacoes...
-".venv\Scripts\python.exe" -c "import fastapi, uvicorn, yt_dlp, jinja2, dotenv; import baixai_forge; print('Python/Dependencias: OK | Baixai Forge', baixai_forge.__version__)"
+".venv\Scripts\python.exe" -c "import fastapi, uvicorn, yt_dlp, jinja2, dotenv, httpx; import baixai_forge; print('Python/Dependencias: OK | Baixai Forge', baixai_forge.__version__)"
 if errorlevel 1 goto :erro
 
 echo [5/5] Verificando FFmpeg...

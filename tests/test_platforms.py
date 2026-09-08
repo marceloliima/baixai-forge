@@ -26,3 +26,11 @@ def test_normalize_removes_fragment():
 def test_reject_unsafe_or_unsupported(url):
     with pytest.raises(InvalidMediaUrl):
         detect_platform(url)
+
+
+def test_shopee_short_subdomain_is_detected():
+    assert detect_platform("https://br.shp.ee/eo1q8p7f?fromSource=copy_link").slug == "shopee"
+
+
+def test_shopee_direct_cdn_is_detected():
+    assert detect_platform("https://down-zl-br.vod.susercontent.com/api/v4/x/video.mp4").slug == "shopee"

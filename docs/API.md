@@ -1,4 +1,4 @@
-# API — Baixaí Forge v1.0.0
+# API — Baixaí Forge v1.1.0
 
 A documentação interativa OpenAPI fica disponível em `http://127.0.0.1:8765/docs` enquanto o app estiver rodando.
 

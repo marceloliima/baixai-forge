@@ -2,7 +2,7 @@
 setlocal EnableExtensions
 chcp 65001 >nul
 cd /d "%~dp0"
-title Baixai Forge v1.0.0
+title Baixai Forge v1.1.0
 
 if not exist ".venv\Scripts\python.exe" (
   echo Primeira execucao detectada. Abrindo instalador...
@@ -11,7 +11,7 @@ if not exist ".venv\Scripts\python.exe" (
 )
 
 echo ========================================================================
-echo                         BAIXAI FORGE v1.0.0
+echo                         BAIXAI FORGE v1.1.0
 echo ========================================================================
 echo Interface local: http://127.0.0.1:8765
 echo Para encerrar com seguranca, pressione CTRL+C.

@@ -72,3 +72,17 @@ BAIXAI_DOWNLOAD_DIR=D:\Downloads\BaixaiForge
 ```
 
 Garanta permissão de escrita e espaço livre suficiente.
+
+
+## Link curto da Shopee retorna `Unsupported URL`
+
+A partir da v1.1.0 o Baixaí Forge não envia links `br.shp.ee` diretamente ao extrator genérico do yt-dlp. Ele resolve o redirecionamento da Shopee, abre a página `sv.shopee.com.br/share-video/...`, lê o payload `__NEXT_DATA__` e localiza o MP4 do CDN.
+
+Se ainda falhar:
+
+1. execute `ATUALIZAR_YTDLP.bat`;
+2. confirme que o link abre normalmente no navegador;
+3. verifique `data/logs/baixai-forge.log`;
+4. tente novamente alguns minutos depois se a Shopee estiver limitando requisições.
+
+Uma mudança estrutural no HTML/JSON da Shopee pode exigir atualização do resolvedor `baixai_forge/shopee.py`.

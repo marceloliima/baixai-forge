@@ -1,4 +1,4 @@
-# Baixaí Forge v1.0.0
+# Baixaí Forge v1.1.0
 
 **Baixaí Forge** é um downloader local com interface web, criado para transformar uma ferramenta simples em um projeto organizado, resiliente e publicável no GitHub.
 
@@ -6,9 +6,11 @@ O navegador é apenas a interface. O processamento acontece no seu próprio comp
 
 > Use somente em conteúdos públicos ou em conteúdos que você tenha autorização para baixar. Respeite direitos autorais, privacidade e os termos aplicáveis de cada plataforma.
 
-## Recursos da versão 1.0.0
+## Recursos da versão 1.1.0
 
-- YouTube, Instagram, TikTok, Facebook e Shopee (quando o extrator do yt-dlp oferecer suporte ao link).
+- YouTube, Instagram, TikTok e Facebook via yt-dlp.
+- **Shopee Video com resolvedor próprio** para links `br.shp.ee`/`sv.shopee.com.br`, sem depender do extrator genérico do yt-dlp.
+- O resolvedor lê o `__NEXT_DATA__` público da página da Shopee, localiza `watermarkVideoUrl`, tenta a variante MP4 limpa do CDN e usa a URL original como fallback quando necessário.
 - Vídeo em máxima qualidade, 2160p, 1440p, 1080p, 720p, 480p e 360p.
 - MP3 em 320, 256, 192, 128 e 96 kbps.
 - Fila com limite configurável de downloads simultâneos.
@@ -44,7 +46,7 @@ O navegador é apenas a interface. O processamento acontece no seu próprio comp
 5. Execute `INICIAR_BAIXAI_FORGE.bat`.
 6. Acesse `http://127.0.0.1:8765` caso o navegador não abra automaticamente.
 
-O instalador cria `.venv`, atualiza as ferramentas de instalação, instala as dependências e valida as importações.
+O instalador cria `.venv`, atualiza as ferramentas de instalação, instala as dependências, cria `.env` automaticamente a partir de `.env.example` quando ele ainda não existe e valida as importações.
 
 ## Instalação manual
 
@@ -104,6 +106,7 @@ Copie `.env.example` para `.env`. Principais opções:
 | `BAIXAI_DOWNLOAD_DIR` | `data/downloads` | Pasta de arquivos |
 | `BAIXAI_LOG_LEVEL` | `INFO` | Nível de log |
 | `BAIXAI_NO_BROWSER` | `0` | `1` desativa abertura automática |
+| `BAIXAI_ACCESS_LOG` | `0` | `1` exibe cada requisição HTTP no console |
 
 ### Exposição remota
 
@@ -136,6 +139,7 @@ baixai_forge/
 ├── app.py             # API/web e proteção HTTP
 ├── config.py          # configurações e variáveis de ambiente
 ├── downloader.py      # integração isolada com yt-dlp
+├── shopee.py          # resolvedor próprio de links Shopee Video
 ├── jobs.py            # fila, retry, cancelamento e manutenção
 ├── models.py          # modelos de domínio e validação Pydantic
 ├── platforms.py       # normalização de URL e allow-list

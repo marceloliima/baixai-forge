@@ -41,6 +41,7 @@ PLATFORMS: tuple[Platform, ...] = (
             "shopee.ph",
             "shopee.sg",
             "shopee.tw",
+            "vod.susercontent.com",
         ),
     ),
 )

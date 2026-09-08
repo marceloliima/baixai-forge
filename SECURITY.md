@@ -1,6 +1,6 @@
 # Política de segurança
 
-## Escopo da v1.0.0
+## Escopo da v1.1.0
 
 Baixaí Forge foi projetado para uso local em `127.0.0.1`. Não publique a porta diretamente na Internet.
 
